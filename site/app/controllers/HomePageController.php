@@ -90,13 +90,6 @@ class HomePageController extends AbstractController {
             $user_id = $user->getId();
         }
 
-        // $(un)archived_courses will have an array hierarchy of
-        // []  (term/semester is used as the key.  e.g. ["f19"])
-        //  |-> ["name"]  (name of term, e.g. ["name'] => "Fall 2019")
-        //  |-> ["courses"]
-        //           |-> course object 1  (e.g. course details for CSCI-1100)
-        //           |-> course object 2  (e.g. course details for CSCI-1200)
-        //           |-> ... (additional courses and their details for this term)
         $unarchived_courses = $this->core->getQueries()->getUnarchivedCoursesById($user_id);
         $archived_courses = $this->core->getQueries()->getArchivedCoursesById($user_id);
 
@@ -110,27 +103,23 @@ class HomePageController extends AbstractController {
         };
 
         // Run course filters so students who have dropped do not appear on the homepage.
-        foreach ([$archived_courses, $unarchived_courses] as &$terms) {
-            array_walk($terms, function($term) use ($user_id, $as_instructor, $course_filter_callback) {
-                $term['courses'] = array_filter($term['courses'], $course_filter_callback);
-            });
-        }
-        unset($terms);
-
-        // Build return data
-        $unarchived_courses_return_data = [];
-        $archived_courses_return_data = [];
-        foreach($unarchived_courses as $term) {
-            $unarchived_courses_return_data[$term['name']] = $term['courses'];
-        }
-        foreach($archived_courses as $term) {
-            $archived_courses_return_data[$term['name']] = $term['courses'];
-        }
+        $unarchived_courses = array_filter($unarchived_courses, $course_filter_callback);
+        $archived_courses = array_filter($archived_courses, $course_filter_callback);
 
         return Response::JsonOnlyResponse(
             JsonResponse::getSuccessResponse([
-                "unarchived_courses" => $unarchived_courses_return_data,
-                "archived_courses" => $archived_courses_return_data
+                "unarchived_courses" => array_map(
+                    function (Course $course) {
+                        return $course->getCourseInfo();
+                    },
+                    $unarchived_courses
+                ),
+                "archived_courses" => array_map(
+                    function (Course $course) {
+                        return $course->getCourseInfo();
+                    },
+                    $archived_courses
+                )
             ])
         );
     }

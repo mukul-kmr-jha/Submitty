@@ -2417,7 +2417,7 @@ ORDER BY gt.{$section_key}", $params);
      * this function.
      *
      * @param string $user_id
-     * @param string $unarchived set to false to retrieve archived courses.
+     * @param string $unarchived set to false to retrieve archived courses.0
      * @return array - (un)archived courses (and their details) accessible by $user_id
      */
     public function getUnarchivedCoursesById($user_id, $unarchived = true) {
@@ -2426,7 +2426,7 @@ ORDER BY gt.{$section_key}", $params);
             "WHERE u.user_id=? AND c.status=2 AND u.user_group=1";
 
         $this->submitty_db->query("
-SELECT t.name, u.semester, u.course
+SELECT t.name as term_name, u.semester, u.course
 FROM courses_users u
 INNER JOIN courses c ON u.course=c.course AND u.semester=c.semester
 INNER JOIN terms t ON u.semester=t.term_id
@@ -2445,8 +2445,7 @@ ORDER BY t.end_date DESC, u.user_group ASC,
         foreach ($this->submitty_db->rows() as $row) {
             $course = new Course($this->core, $row);
             $course->loadDisplayName();
-            $return[$row['semester']]['name'] = $row['name'];
-            $return[$row['semester']]['courses'][] = $course;
+            $return[] = $course;
         }
         return $return;
     }
