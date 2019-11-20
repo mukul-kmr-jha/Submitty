@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\authentication\DatabaseAuthentication;
 use app\libraries\response\RedirectResponse;
 use app\models\Course;
 use app\models\User;
@@ -131,10 +132,13 @@ class HomePageController extends AbstractController {
             new WebResponse(
                 ['HomePage'],
                 'showHomePage',
-                $user = $this->core->getUser(),
+                $this->core->getUser(),
                 $courses["data"]["unarchived_courses"],
                 $courses["data"]["archived_courses"],
-                $this->core->getConfig()->getUsernameChangeText()
+                $this->core->getConfig()->getUsernameChangeText(),
+                $this->core->getAuthentication() instanceof DatabaseAuthentication,
+                $this->core->getCsrfToken()
+
             )
         );
     }
@@ -286,7 +290,9 @@ class HomePageController extends AbstractController {
                 'showCourseCreationPage',
                 $faculty ?? null,
                 $this->core->getUser()->getId(),
-                $this->core->getQueries()->getAllUnarchivedSemester()
+                $this->core->getQueries()->getAllUnarchivedSemester(),
+                $this->core->getUser()->getAccessLevel() === User::LEVEL_SUPERUSER,
+                $this->core->getCsrfToken()
             )
         );
     }
