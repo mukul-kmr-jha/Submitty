@@ -81,7 +81,7 @@ class CourseTester extends BaseUnitTest {
                 'semester' => 's18',
                 'title' => 'csci1000',
                 'display_name' => 'Test Course',
-                'user_group' => 4,
+                'user_group' => 3,
                 'modified' => false
             ];
             $this->assertEquals($array, $course->toArray());
