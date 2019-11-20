@@ -34,8 +34,7 @@ class HomePageView extends AbstractView {
 
             //Assemble courses into rank lists
             foreach ($course_type as $course) {
-                $rank = $this->core->getQueries()->getGroupForUserInClass($course['semester'], $course['title'], $user->getId());
-                array_push($ranks[$rank]["courses"], $course);
+                array_push($ranks[$course['user_group']]["courses"], $course);
             }
 
             //Filter any ranks with no courses
@@ -46,7 +45,7 @@ class HomePageView extends AbstractView {
         }
 
 
-        $autofill_preferred_name = [$user->getLegalFirstName(),$user->getLegalLastName()];
+        $autofill_preferred_name = [$user->getLegalFirstName(), $user->getLegalLastName()];
         if ($user->getPreferredFirstName() != "") {
             $autofill_preferred_name[0] = $user->getPreferredFirstName();
         }
