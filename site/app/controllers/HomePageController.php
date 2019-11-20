@@ -138,7 +138,6 @@ class HomePageController extends AbstractController {
                 $this->core->getConfig()->getUsernameChangeText(),
                 $this->core->getAuthentication() instanceof DatabaseAuthentication,
                 $this->core->getCsrfToken()
-
             )
         );
     }
