@@ -1049,6 +1049,8 @@ class ElectronicGraderController extends AbstractController {
                 $prevVersionInstance = $graded_gradeable->getAutoGradedGradeable()->getAutoGradedVersionInstance($previousVersion);
                 $lateInfo = LateDays::fromUser($this->core, $late_days_user)->getLateDayInfoByGradeable($gradeable);
                 $numOfLateDays =  LateDays::fromUser($this->core, $late_days_user)->getLateDaysRemainingByContext($prevVersionInstance->getSubmissionTime());
+
+                echo "Late NUm of Days" . $numOfLateDays . " Version is ". $previousVersion;
                 if ($lateInfo == null || ($lateInfo->getStatus($numOfLateDays) == LateDayInfo::STATUS_GOOD)) {
                     $rollbackSubmission = $previousVersion;
                     break;
