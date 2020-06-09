@@ -73,6 +73,7 @@ class PlagiarismView extends AbstractView {
             $plagiarism_result_info[] = $plagiarism_row;
         }
 
+        $this->core->getOutput()->addInternalCss("plagiarism.css");
          return $this->core->getOutput()->renderTwigTemplate('plagiarism/Plagiarism.twig', [
             "refresh_page" => $refresh_page,
             "plagiarism_results_info" => $plagiarism_result_info,
